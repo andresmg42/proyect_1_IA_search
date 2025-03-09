@@ -61,16 +61,15 @@ class Maze():
       
         
         self.width=len(self.contents[0])
-        self.boxes=0
+        self.boxes=set()
         
         for i in range(self.height):
             
             for j in range(self.width):
                 if self.contents[i][j]== '2':
                         self.start=(i,j)
-                        self.contents[i][j]=='0'
                 elif self.contents[i][j]=='4':
-                    self.boxes+=1
+                    self.boxes.add((i,j))
         
         self.solution=None
     
@@ -117,7 +116,7 @@ class Maze():
         
         self.num_explored=0
         
-        start=Node(state=0,parent=None,action=None,cost=0,position=self.start)
+        start=Node(state=set(),parent=None,action=None,cost=0,position=self.start)
         frontier=QueueCostFrontier()
         frontier.add(start)
         
@@ -131,7 +130,7 @@ class Maze():
             node=frontier.remove()
             self.num_explored+=1
             
-            if node.state == self.boxes:
+            if len(node.state) == len(self.boxes):
                 actions=[]
                 cells=[]
                 while node.parent is not None:
@@ -143,7 +142,7 @@ class Maze():
                 self.solution= (actions,cells)
                 return
             
-            self.explored.add((node.position,node.state))
+            self.explored.add(node)
             
             
             for action,position in self.neighbors(node.position):
@@ -151,15 +150,15 @@ class Maze():
                 
                 newstate=node.state
                 if self.contents[i][j]=='4':
-                    newstate=node.state+1
-                    # self.contents[i][j]='0'
+                    newstate = node.state.copy()
+                    newstate.add((i,j))
+                    
                     
                 newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
                 
-
-                if not frontier.contains_state(newstate,position) and (position,newstate)  not in self.explored:
-                    
-                    child=Node(state=newstate,parent=node,action=action,cost=newcost,position=position)
+                child=Node(state=newstate,parent=node,action=action,cost=newcost,position=position)
+                
+                if not frontier.contains_state(newstate,position) and child  not in self.explored:
                     
                     frontier.add(child)
                     
