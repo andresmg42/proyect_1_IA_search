@@ -2,14 +2,13 @@ import sys
 import math
 
 class Node():
-    def __init__(self,state,parent,action,cost,position):
+    def __init__(self,state,parent,action,position):
         self.state=state
         self.parent=parent
         self.action= action
-        self.cost=cost
         self.position=position
         
-class QueueCostFrontier():
+class QueueFrontier():
     def __init__(self):
         self.frontier=[]
     
@@ -23,19 +22,16 @@ class QueueCostFrontier():
         return len(self.frontier)==0
     
     def remove(self):
+        
         if self.empty():
             raise Exception('empty frontier')
         else:
-            nodomin=None
-            min=math.inf
+       
+            node=self.frontier[0]
+            self.frontier=self.frontier[1:]
             
-            for node in self.frontier:
-                if node.cost < min:
-                    min=node.cost
-                    nodomin=node
-                    
-            self.frontier.remove(nodomin)
-            return nodomin
+            return node
+           
                 
                 
             
@@ -116,8 +112,8 @@ class Maze():
         
         self.num_explored=0
         
-        start=Node(state=set(),parent=None,action=None,cost=0,position=self.start)
-        frontier=QueueCostFrontier()
+        start=Node(state=set(),parent=None,action=None,position=self.start)
+        frontier=QueueFrontier()
         frontier.add(start)
         
         self.explored=set()
@@ -136,13 +132,14 @@ class Maze():
                 while node.parent is not None:
                     actions.append(node.action)
                     cells.append(node.position)
-                    node= node.parent
+                    node = node.parent
                 actions.reverse()
                 cells.reverse()
                 self.solution= (actions,cells)
                 return
             
-            self.explored.add(node)
+            # self.explored.add(node)
+            self.explored.add((node.position,tuple(sorted(node.state))))
             
             
             for action,position in self.neighbors(node.position):
@@ -154,11 +151,11 @@ class Maze():
                     newstate.add((i,j))
                     
                     
-                newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+               
                 
-                child=Node(state=newstate,parent=node,action=action,cost=newcost,position=position)
+                child=Node(state=newstate,parent=node,action=action,position=position)
                 
-                if not frontier.contains_state(newstate,position) and child  not in self.explored:
+                if not frontier.contains_state(newstate,position) and (child.position,tuple(sorted(child.state)))  not in self.explored:
                     
                     frontier.add(child)
                     
@@ -227,19 +224,4 @@ print("States Explored:", m.num_explored)
 print("Solution:")
 m.print()
 m.output_image("maze.png", show_explored=True)
-print(m.solution)            
-            
-            
-            
-            
-       
-        
-                    
-                    
-                
-                
-                    
-            
-            
-            
-            
+print(m.solution) 
