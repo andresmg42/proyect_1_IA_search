@@ -173,9 +173,11 @@ class Maze():
                     
             
                 
-                child=Node(state=newstate,parent=node,action=action,position=position)
                 
-                if not frontier.contains_state(newstate,position) and (child.position,tuple(sorted(child.state)))  not in self.explored:
+                
+                if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
+                    
+                    child=Node(state=newstate,parent=node,action=action,position=position)
                     
                     frontier.add(child)
                     

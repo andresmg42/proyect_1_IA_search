@@ -155,11 +155,13 @@ class Maze():
                     newstate.add((i,j))
                     
                     
-                newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
                 
-                child=Node(state=newstate,parent=node,action=action,cost=newcost,position=position)
                 
-                if not frontier.contains_state(newstate,position) and (child.position,tuple(sorted(child.state)))  not in self.explored:
+                if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
+                    
+                    newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+                
+                    child=Node(state=newstate,parent=node,action=action,cost=newcost,position=position)
                     
                     frontier.add(child)
                     
