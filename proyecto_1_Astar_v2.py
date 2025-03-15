@@ -13,8 +13,8 @@ class Node():
        
         
         
-    def manhattan_distance(self,goal):
-        return abs(self.position[0] - goal[0]) + abs(self.position[1] - goal[1])    
+    def manhattan_distance(self, position, goal):
+        return abs(position[0] - goal[0]) + abs(position[1] - goal[1])    
         
     def calc_heuristic(self,boxes):   
          
@@ -23,7 +23,7 @@ class Node():
             self.m_d=0
         
         else:
-            self.m_d= min(self.manhattan_distance(box) for box in remaining_boxes)
+            self.m_d= min(self.manhattan_distance(self.position, box) for box in remaining_boxes)
             self.total_cost=self.cost+self.m_d
         
         
@@ -52,13 +52,12 @@ class QueueFrontier():
         self.frontier.remove(min_node)
         return min_node
     
-    def update_node(self, state, position, new_node):
-        for i, node in enumerate(self.frontier):
-            if node.state == state and node.position == position:
-                if new_node.cost < node.cost:
-                    self.frontier[i] = new_node
-                return True
-        return False
+    def update_node(self,newcost,old_node,index):
+        node=self.frontier[index]
+        node.cost=newcost
+        node.parent=old_node
+        node.total_cost=newcost+node.m_d
+        
             
     
 class Maze():
@@ -175,19 +174,45 @@ class Maze():
                 if self.contents[i][j]=='4':
                     newstate.add((i,j))
                     
-                                   
-                if (position,tuple(sorted(newstate)))  not in self.explored:
                     
-                    newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+                if (position,tuple(sorted(newstate))) in self.explored:
+                    continue
+                
+                
+                    
+                
+                
+                
+                # if (position,tuple(sorted(newstate)))  not in self.explored:
+                    
+                #     newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+                    
+                #     child=Node(state=newstate,parent=node,action=action,position=position,cost=newcost)
+                
+                #     child.calc_heuristic(self.boxes)
+                    
+                    
+                    
+                #     if frontier.contains_state(newstate, position):
+                #         frontier.update_node(newstate, position, child)
+                #     else:
+                #         frontier.add(child)
+                        
+                newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+                
+                if not frontier.contains_state(newstate,position):
+                    
+                    
                     
                     child=Node(state=newstate,parent=node,action=action,position=position,cost=newcost)
                 
                     child.calc_heuristic(self.boxes)
-                        
-                    if frontier.contains_state(newstate, position):
-                        frontier.update_node(newstate, position, child)
-                    else:
-                        frontier.add(child)
+                    
+                    frontier.add(child)
+                    
+                elif newcost < [(i,n.cost) for i,n in enumerate(frontier.frontier) if n.state==newstate and n.position==position][0][1]:
+                    frontier.update_node(newcost,node,i)
+                    
                     
                     
                     
