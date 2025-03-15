@@ -13,22 +13,18 @@ class Node():
        
         
         
-    def manhatan_dist(self, boxes):
-    # If all boxes are in state, distance is 0
-        if len(self.state) == len(boxes):
-            self.m_d = 0
-            self.total_cost = self.cost
-            return
-            
-        # Calculate distance to nearest unvisited box
-        min_distance = float('inf')
-        for box in boxes:
-            if box not in self.state:
-                distance = abs(box[0] - self.position[0]) + abs(box[1] - self.position[1])
-                min_distance = min(min_distance, distance)
+    def manhattan_distance(self, position, goal):
+        return abs(position[0] - goal[0]) + abs(position[1] - goal[1])    
         
-        self.m_d = min_distance
-        self.total_cost = self.m_d + self.cost
+    def calc_heuristic(self,boxes):   
+         
+        remaining_boxes = boxes - self.state
+        if not remaining_boxes:  
+            self.m_d=0
+        
+        else:
+            self.m_d= min(self.manhattan_distance(self.position, box) for box in remaining_boxes)
+            self.total_cost=self.cost+self.m_d
         
         
         
@@ -51,10 +47,18 @@ class QueueFrontier():
         if self.empty():
             raise Exception('empty frontier')
         
-        # Find node with minimum total cost
+        
         min_node = min(self.frontier, key=lambda x: x.total_cost)
         self.frontier.remove(min_node)
         return min_node
+    
+    def update_node(self, state, position, new_node):
+        for i, node in enumerate(self.frontier):
+            if node.state == state and node.position == position:
+                if new_node.cost < node.cost:
+                    self.frontier[i] = new_node
+                return True
+        return False
             
     
 class Maze():
@@ -160,7 +164,7 @@ class Maze():
                 self.solution= (actions,cells)
                 return
             
-            # self.explored.add(node)
+            
             self.explored.add((node.position,tuple(sorted(node.state))))
             
             
@@ -176,19 +180,22 @@ class Maze():
                 
                 
                 
-                if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
+                if (position,tuple(sorted(newstate)))  not in self.explored:
                     
                     newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
                     
                     child=Node(state=newstate,parent=node,action=action,position=position,cost=newcost)
                 
-                    child.manhatan_dist(self.boxes)
+                    child.calc_heuristic(self.boxes)
                     
-                    print(f'costo:{child.cost}---pocicion:{child.position}----distancia: {child.m_d}-----costo_total:{child.total_cost}')
                     
-                    frontier.add(child)
                     
-                    print('frontier: ',[node.total_cost for node in frontier.frontier])
+                    if frontier.contains_state(newstate, position):
+                        frontier.update_node(newstate, position, child)
+                    else:
+                        frontier.add(child)
+                    
+                    
                     
                     
                     
