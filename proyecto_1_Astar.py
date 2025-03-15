@@ -2,28 +2,33 @@ import sys
 import math
 
 class Node():
-    def __init__(self,state,parent,action,position):
+    def __init__(self,state,parent,action,position,cost):
         self.state=state
         self.parent=parent
         self.action= action
         self.position=position
         self.m_d=0
+        self.cost=cost
+        self.total_cost=0
        
-    def manhattan_distance(self, position, goal):
-        return abs(position[0] - goal[0]) + abs(position[1] - goal[1])    
         
-    def calc_heuristic(self,boxes):   
-        # sum=0
-        # for box in boxes:
-        #     if box not in self.state:
-        #         sum+= abs(box[0]-self.position[0])+abs(box[1]-self.position[1])      
-        # self.m_d=sum 
-        remaining_boxes = boxes - self.state
-        if not remaining_boxes:  # Si todas las cajas han sido alcanzadas
-            return 0
         
-        # Retornamos la distancia mínima a la caja más cercana
-        return min(self.manhattan_distance(self.position, box) for box in remaining_boxes)
+    def manhatan_dist(self, boxes):
+    # If all boxes are in state, distance is 0
+        if len(self.state) == len(boxes):
+            self.m_d = 0
+            self.total_cost = self.cost
+            return
+            
+        # Calculate distance to nearest unvisited box
+        min_distance = float('inf')
+        for box in boxes:
+            if box not in self.state:
+                distance = abs(box[0] - self.position[0]) + abs(box[1] - self.position[1])
+                min_distance = min(min_distance, distance)
+        
+        self.m_d = min_distance
+        self.total_cost = self.m_d + self.cost
         
         
         
@@ -43,30 +48,15 @@ class QueueFrontier():
     
     
     def remove(self):
-        
         if self.empty():
             raise Exception('empty frontier')
-        else:
-       
-            nodomin=None
-            min_distance=sys.maxsize
-            
-            for node in self.frontier:
-                if node.m_d < min_distance:
-                    min_distance=node.m_d
-                    nodomin=node
-                    
-            self.frontier.remove(nodomin)
-            return nodomin
-            
-            
-           
-                
-                
-            
-            
         
-
+        # Find node with minimum total cost
+        min_node = min(self.frontier, key=lambda x: x.total_cost)
+        self.frontier.remove(min_node)
+        return min_node
+            
+    
 class Maze():
     
     def __init__(self,filename):
@@ -141,7 +131,7 @@ class Maze():
         
         self.num_explored=0
         
-        start=Node(state=set(),parent=None,action=None,position=self.start)
+        start=Node(state=set(),parent=None,action=None,position=self.start,cost=0)
         frontier=QueueFrontier()
         frontier.add(start)
         
@@ -149,10 +139,13 @@ class Maze():
         
         while True:
             
+                       
+            
             if frontier.empty():
                 raise Exception('no solution')
             
             node=frontier.remove()
+            print(f'nodo removido: position = {node.position}, total_cost= {node.total_cost}')
             self.num_explored+=1
             
             if len(node.state) == len(self.boxes):
@@ -176,7 +169,6 @@ class Maze():
                 
                 newstate=node.state.copy()
                 if self.contents[i][j]=='4':
-                    # newstate = node.state.copy()
                     newstate.add((i,j))
                     
                     
@@ -186,11 +178,19 @@ class Maze():
                 
                 if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
                     
-                    child=Node(state=newstate,parent=node,action=action,position=position)
+                    newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+                    
+                    child=Node(state=newstate,parent=node,action=action,position=position,cost=newcost)
                 
-                    child.calc_heuristic(self.boxes)
+                    child.manhatan_dist(self.boxes)
+                    
+                    print(f'costo:{child.cost}---pocicion:{child.position}----distancia: {child.m_d}-----costo_total:{child.total_cost}')
                     
                     frontier.add(child)
+                    
+                    print('frontier: ',[node.total_cost for node in frontier.frontier])
+                    
+                    
                     
                     
                 
