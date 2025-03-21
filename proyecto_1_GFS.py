@@ -13,16 +13,11 @@ class Node():
         return abs(position[0] - goal[0]) + abs(position[1] - goal[1])    
         
     def calc_heuristic(self,boxes):   
-        # sum=0
-        # for box in boxes:
-        #     if box not in self.state:
-        #         sum+= abs(box[0]-self.position[0])+abs(box[1]-self.position[1])      
-        # self.m_d=sum 
+        
         remaining_boxes = boxes - self.state
-        if not remaining_boxes:  # Si todas las cajas han sido alcanzadas
+        if not remaining_boxes:  
             return 0
         
-        # Retornamos la distancia mínima a la caja más cercana
         return min(self.manhattan_distance(self.position, box) for box in remaining_boxes)
         
         

@@ -148,7 +148,7 @@ class Maze():
                 raise Exception('no solution')
             
             node=frontier.remove()
-            print(f'nodo removido: position = {node.position}, total_cost= {node.total_cost}')
+            
             self.num_explored+=1
             
             if len(node.state) == len(self.boxes):
