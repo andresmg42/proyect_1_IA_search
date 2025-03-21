@@ -1,5 +1,4 @@
-conjunto1={1,2,3}
-conjunto2={2,1,3}
+lista=[1,2,3,4,5,6]
 
-print(conjunto1==conjunto2)
+print(lista[:2])
 

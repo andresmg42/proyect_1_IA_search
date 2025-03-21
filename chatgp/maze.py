@@ -52,11 +52,9 @@ def find_start():
                 return row, col
     return None
 
-def draw_maze():
+def draw_maze(partial_solution):
     for row in range(len(maze)):
         for col in range(len(maze[0])):
-            
-            color = WHITE
             if maze[row][col] == 1:
                 color = GRAY  # Pared
             elif maze[row][col] == 2:
@@ -65,40 +63,31 @@ def draw_maze():
                 color = ORANGE  # Campo electromagnético
             elif maze[row][col] == 4:
                 color = GREEN  # Caja objetivo
+            else:
+                color=WHITE
+                
+            if (row,col) in partial_solution:
+                color=YELLOW
+            
             
             pygame.draw.rect(screen, color, (col * tile_size, row * tile_size, tile_size, tile_size))
             pygame.draw.rect(screen, BLACK, (col * tile_size, row * tile_size, tile_size, tile_size), 1)
             
-
     
-            
-
-def paint_solution():
-    for i in range(len(solution)):
-        start=find_start()
-        pygame.draw.rect(screen, YELLOW, (start[1] * tile_size, start[0] * tile_size, tile_size, tile_size))
-        pygame.draw.rect(screen, BLACK, (start[1] * tile_size, start[0] * tile_size, tile_size, tile_size), 1)
-        time.sleep(0.2)
-        
-          
-        pygame.draw.rect(screen, BLUE, (solution[i][1] * tile_size, solution[i][0] * tile_size, tile_size, tile_size))
-        pygame.draw.rect(screen, BLACK, (solution[i][1] * tile_size, solution[i][0] * tile_size, tile_size, tile_size), 1)
-        time.sleep(0.2)
-        
-        if i!=0 :
-            pygame.draw.rect(screen, YELLOW, (solution[i-1][1] * tile_size, solution[i-1][0] * tile_size, tile_size, tile_size))
-            pygame.draw.rect(screen, BLACK, (solution[i-1][1] * tile_size, solution[i-1][0] * tile_size, tile_size, tile_size), 1)
-            
-            
-        pygame.display.flip()
            
 
 # Bucle principal
 running = True
+flag=False
+count=0
+partial_solution=[]
+
+clock=pygame.time.Clock()
+
 while running:
     screen.fill(WHITE)
  
-    draw_maze()
+    draw_maze(partial_solution)
     start_button=pygame.Rect((width//4-75, height-80,150,50))
     # pygame.draw.rect(screen,BLACK,(width*3//4-75, height-80,150,50))
     start_text=mediumFont.render('Start',True,WHITE)
@@ -115,23 +104,45 @@ while running:
     pygame.draw.rect(screen,RED,exit_button)
     screen.blit(exit_text,exit_rect)
     
-    click, _,_=pygame.mouse.get_pressed()
-    if click==1:
-        mouse= pygame.mouse.get_pos()
-        if start_button.collidepoint(mouse):
+    # click, _,_=pygame.mouse.get_pressed()
+    # if click==1:
+    #     mouse= pygame.mouse.get_pos()
+    #     if start_button.collidepoint(mouse):
         
-            paint_solution()
-        elif exit_button.collidepoint(mouse):
-            running=False
-            
-            
-            
-            
-    pygame.display.flip()
+    #         flag=True
+    #     elif exit_button.collidepoint(mouse):
+    #         running=False
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    for event in  pygame.event.get():
+        if  event.type==pygame.QUIT:
+            running=False
+        elif event.type==pygame.MOUSEBUTTONDOWN:
+            mouse=pygame.mouse.get_pos()
+            if start_button.collidepoint(mouse):
+                flag=True
+                count=0
+                partial_solution=[]
+            
+            elif exit_button.collidepoint(mouse):
+                running=False
+                
+        
+
+    
+            
+    if flag and count<len(solution):
+        count+=1 
+        partial_solution=solution[:count]  
+        pygame.time.delay(200)
+             
+            
+           
+    pygame.display.flip()
+    clock.tick(30)
+    
+    # for event in pygame.event.get():
+    #     if event.type == pygame.QUIT:
+    #         running = False
     
     
     
