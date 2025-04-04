@@ -38,7 +38,7 @@ height = len(maze) * tile_size + 100
 
 # Inicializar pygame
 pygame.init()
-mediumFont = pygame.font.Font("./fonts/OpenSans-Regular.ttf", 28)
+mediumFont = pygame.font.Font("fonts/OpenSans-Regular.ttf", 28)
 # largeFont = pygame.font.Font("OpenSans-Regular.ttf", 40)
 # moveFont = pygame.font.Font("OpenSans-Regular.ttf", 60)
 # pygame.font.init()
@@ -56,13 +56,13 @@ def draw_maze(partial_solution):
     for row in range(len(maze)):
         for col in range(len(maze[0])):
             if maze[row][col] == 1:
-                color = GRAY  # Pared
+                color = GRAY  
             elif maze[row][col] == 2:
-                color = BLUE  # Dron
+                color = BLUE  
             elif maze[row][col] == 3:
-                color = ORANGE  # Campo electromagnético
+                color = ORANGE  
             elif maze[row][col] == 4:
-                color = GREEN  # Caja objetivo
+                color = GREEN  
             else:
                 color=WHITE
                 
