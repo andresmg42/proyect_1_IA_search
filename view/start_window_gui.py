@@ -5,12 +5,17 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gui.maze2 import GUI
 from algorithms.proyecto_1_GFS import Maze as m_gfs
+from algorithms.proyecto_1_DFS import Maze as m_dfs
+from algorithms.proyecto_1_costo import Maze as m_costo
+from algorithms.proyecto_1_BFS import Maze as m_bfs
+from algorithms.proyecto_1_Astar import Maze as m_astar
 
 
 class StartWindow():
     
     def __init__(self):
         self.contents=None
+        
         
     def open_file(self):
         file_path = filedialog.askopenfilename()
@@ -30,14 +35,33 @@ class StartWindow():
                 self.contents=text_to_save
             messagebox.showinfo("Info", "File saved successfully")
             
+    def get_selected_algorithm(self):
+        option=self.selected_option.get()
+        print(option)
+        if option=='GFS':
+            return m_gfs
+        elif option=='DFS':
+            return m_dfs
+        elif option=='COST':
+            return m_costo
+        elif option=='A*':
+            return m_astar
+        else:
+            return m_bfs
+            
+            
     def on_start_click(self):
         if self.contents is not None:
-            m=m_gfs(self.contents)
+            algorithm=self.get_selected_algorithm()
+            m=algorithm(self.contents)
             m.solve()
             solution=m.solution[1]
             maze=[[int(cell) for cell in line.split()] for line in self.contents.splitlines()]
             gui=GUI(maze,solution)
+            m.output_image("maze.png", show_explored=True)
             gui.main_lopp()
+            
+            
             
         else:
             messagebox.showerror('choose a valid file!')
@@ -87,7 +111,7 @@ class StartWindow():
         radio_label.pack(anchor=tk.NW,pady=(0,5))
 
         #variable to store selected option
-        selected_option=tk.StringVar(value='BFS')
+        self.selected_option=tk.StringVar(value='BFS')
 
         #List of radio button options
         options=['BFS','DFS','COST','GFS','A*']
@@ -98,7 +122,7 @@ class StartWindow():
                 right_container,
                 text=option,
                 value=option,
-                variable=selected_option
+                variable=self.selected_option
             )
             rb.pack(anchor=tk.NW)
 
@@ -113,7 +137,7 @@ class StartWindow():
                 right_container,
                 text=option,
                 value=option,
-                variable=selected_option
+                variable=self.selected_option
             )
             rb.pack(anchor=tk.NW)
 
