@@ -1,6 +1,5 @@
 
-
-from .maze2 import GUI
+# from maze2 import GUI
 
 maze = [
     [1, 1, 0, 0, 0, 0, 0, 1, 1, 1],

@@ -240,16 +240,16 @@ class Maze():
             img.save(filename)
 
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python proyecto_1.py Prueba1.txt")
+# if len(sys.argv) != 2:
+#     sys.exit("Usage: python proyecto_1.py Prueba1.txt")
 
-m = Maze(sys.argv[1])
-print("Maze:")
-m.print()
-print("Solving...")
-m.solve()
-print("States Explored:", m.num_explored)
-print("Solution:")
-m.print()
-m.output_image("maze.png", show_explored=True)
-print(m.solution) 
+# m = Maze(sys.argv[1])
+# print("Maze:")
+# m.print()
+# print("Solving...")
+# m.solve()
+# print("States Explored:", m.num_explored)
+# print("Solution:")
+# m.print()
+# m.output_image("maze.png", show_explored=True)
+# print(m.solution) 

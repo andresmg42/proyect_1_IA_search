@@ -38,7 +38,7 @@ height = len(maze) * tile_size + 100
 
 # Inicializar pygame
 pygame.init()
-font="fonts/OpenSans-Regular.ttf"
+font="gui/fonts/OpenSans-Regular.ttf"
 mediumFont = pygame.font.Font(font, 28)
 # largeFont = pygame.font.Font(font, 40)
 # moveFont = pygame.font.Font(font, 60)

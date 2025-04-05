@@ -5,8 +5,20 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gui.maze2 import GUI
 from gui.pruebas import maze,solution
+from algorithms.proyecto_1_GFS import Maze
 
-
+maze = [
+    [1, 1, 0, 0, 0, 0, 0, 1, 1, 1],
+    [1, 1, 0, 1, 0, 1, 0, 1, 1, 1],
+    [0, 2, 0, 3, 4, 4, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+    [0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+    [3, 3, 0, 1, 0, 1, 1, 1, 1, 1],
+    [1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 1, 1, 1, 1, 1, 1, 0],
+    [1, 1, 0, 0, 0, 0, 4, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+]
 
 def open_file():
     file_path = filedialog.askopenfilename()
@@ -23,6 +35,10 @@ def save_file():
         messagebox.showinfo("Info", "File saved successfully")
         
 def on_start_click():
+    m=Maze('plane_files/Prueba1.txt')
+    m.solve()
+    solution=m.solution[1]
+    print(solution)
     gui=GUI(maze,solution)
     gui.main_lopp()
     
