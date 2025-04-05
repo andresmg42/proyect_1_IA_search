@@ -19,15 +19,16 @@ maze = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-maze_path=None
+contents=None
 
 def open_file():
     file_path = filedialog.askopenfilename()
-    maze_path=file_path
+    
     if file_path:
         with open(file_path, 'r') as file:
+            contents=file.read()
             text.delete(1.0, tk.END)
-            text.insert(tk.END, file.read())
+            text.insert(tk.END, contents)
 
 def save_file():
     file_path = filedialog.asksaveasfilename(defaultextension=".txt")
@@ -37,12 +38,18 @@ def save_file():
         messagebox.showinfo("Info", "File saved successfully")
         
 def on_start_click():
-    m=m_gfs('plane_files/Prueba1.txt')
-    m.solve()
-    solution=m.solution[1]
-    print(solution)
-    gui=GUI(maze,solution)
-    gui.main_lopp()
+    if contents is not None:
+        # m=m_gfs(contents)
+        # m.solve()
+        # solution=m.solution[1]
+        # print(solution)
+        # gui=GUI(maze,solution)
+        # gui.main_lopp()
+        print(contents)
+    else:
+        messagebox.showerror('choose a valid file!')
+        
+    
     
     
     

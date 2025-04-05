@@ -1,0 +1,130 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox,ttk
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from gui.maze2 import GUI
+from algorithms.proyecto_1_GFS import Maze as m_gfs
+
+
+class StartWindow():
+    
+    def __init__(self):
+        self.contents=None
+        
+    def open_file(self):
+        file_path = filedialog.askopenfilename()
+        
+        if file_path:
+            with open(file_path, 'r') as file:
+                self.contents=file.read()
+                self.text.delete(1.0, tk.END)
+                self.text.insert(tk.END, self.contents)
+        
+    def save_file(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt")
+        if file_path:
+            with open(file_path, 'w') as file:
+                text_to_save=self.text.get(1.0, tk.END)
+                file.write(text_to_save)
+                self.contents=text_to_save
+            messagebox.showinfo("Info", "File saved successfully")
+            
+    def on_start_click(self):
+        if self.contents is not None:
+            m=m_gfs(self.contents)
+            m.solve()
+            solution=m.solution[1]
+            maze=[[int(cell) for cell in line.split()] for line in self.contents.splitlines()]
+            gui=GUI(maze,solution)
+            gui.main_lopp()
+            
+        else:
+            messagebox.showerror('choose a valid file!')
+    
+    def main_loop(self):
+        root = tk.Tk()
+        root.title("SEARCH IA")
+        root.geometry('700x400')
+
+        # Menu bar
+        menubar = tk.Menu(root)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Open", command=self.open_file)
+        filemenu.add_command(label="Save", command=self.save_file)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=root.quit)
+        menubar.add_cascade(label="File", menu=filemenu)
+        root.config(menu=menubar)
+
+        #main container
+        container=ttk.Frame(root,padding=10)
+        container.pack_propagate(False)
+        container.pack(fill= tk.BOTH, expand=True)
+
+
+        #create left and right sections inside the main frame
+        left_container=ttk.Frame(container)
+        left_container.pack(side=tk.LEFT,fill=tk.BOTH, expand=True, padx=(0,5))
+
+        right_container=ttk.Frame(container)
+        right_container.pack(side=tk.RIGHT, fill=tk.Y)
+
+
+
+
+        # Text widget with scrollbar
+        self.text = tk.Text(left_container,width=40, height=15, font=('Arial',12),wrap=tk.WORD)
+        scrollbar = tk.Scrollbar(left_container, command=self.text.yview)
+        self.text.config(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.text.pack(fill=tk.BOTH, expand=True)
+
+
+
+        #add radio button
+        radio_label=ttk.Label(right_container, text="Choose an Uninformed Algorithm:")
+        radio_label.pack(anchor=tk.NW,pady=(0,5))
+
+        #variable to store selected option
+        selected_option=tk.StringVar(value='BFS')
+
+        #List of radio button options
+        options=['BFS','DFS','COST','GFS','A*']
+
+        #Create radio buttons uninformed algorithms
+        for option in options[:3]:
+            rb=ttk.Radiobutton(
+                right_container,
+                text=option,
+                value=option,
+                variable=selected_option
+            )
+            rb.pack(anchor=tk.NW)
+
+        #add radio button
+        radio_label=ttk.Label(right_container, text="Choose an Informed Algorithm:")
+        radio_label.pack(anchor=tk.NW,pady=(0,5))
+
+
+        #Create radio buttons informed algorithms
+        for option in options[3:]:
+            rb=ttk.Radiobutton(
+                right_container,
+                text=option,
+                value=option,
+                variable=selected_option
+            )
+            rb.pack(anchor=tk.NW)
+
+
+
+        #add start button
+        start_button=tk.Button(right_container,text='Start',command=self.on_start_click)
+        start_button.pack(pady=10)
+
+        root.mainloop()
+        
+        
+    
+    

@@ -64,9 +64,9 @@ class QueueFrontier():
 
 class Maze():
     
-    def __init__(self,filename):
-        with open(filename) as f:
-            contents=f.read()
+    def __init__(self,contents):
+        # with open(filename) as f:
+        #     contents=f.read()
             
         if contents.count('2')!=1:
             raise Exception('maze must have exactly one start point')
