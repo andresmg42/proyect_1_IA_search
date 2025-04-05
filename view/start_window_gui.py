@@ -65,6 +65,27 @@ class StartWindow():
             
         else:
             messagebox.showerror('choose a valid file!')
+            
+    # def on_last_solution_click(self):
+    #     self.last_solution_image()
+            
+    def last_solution_image(self):
+        root=tk.Toplevel()
+        root.title("LAST SOLUTION")
+        root.geometry('500x500')
+        
+        #load image
+        root.img=tk.PhotoImage(file='maze.png')
+        
+        #Create label whit image
+        label=tk.Label(root,image=root.img)
+        label.pack(fill=tk.BOTH)
+        
+        # root.mainloop()
+        
+        
+        
+        
     
     def main_loop(self):
         root = tk.Tk()
@@ -146,6 +167,12 @@ class StartWindow():
         #add start button
         start_button=tk.Button(right_container,text='Start',command=self.on_start_click)
         start_button.pack(pady=10)
+        
+        #add start button
+        image_button=tk.Button(right_container,text='Last Solution',command=self.last_solution_image)
+        image_button.pack(pady=10)
+        
+       
 
         root.mainloop()
         
