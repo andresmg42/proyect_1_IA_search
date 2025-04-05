@@ -38,10 +38,11 @@ height = len(maze) * tile_size + 100
 
 # Inicializar pygame
 pygame.init()
-mediumFont = pygame.font.Font("fonts/OpenSans-Regular.ttf", 28)
-# largeFont = pygame.font.Font("OpenSans-Regular.ttf", 40)
-# moveFont = pygame.font.Font("OpenSans-Regular.ttf", 60)
-# pygame.font.init()
+font="fonts/OpenSans-Regular.ttf"
+mediumFont = pygame.font.Font(font, 28)
+# largeFont = pygame.font.Font(font, 40)
+# moveFont = pygame.font.Font(font, 60)
+pygame.font.init()
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Laberinto con Pygame")
 
@@ -89,7 +90,6 @@ while running:
  
     draw_maze(partial_solution)
     start_button=pygame.Rect((width//4-75, height-80,150,50))
-    # pygame.draw.rect(screen,BLACK,(width*3//4-75, height-80,150,50))
     start_text=mediumFont.render('Start',True,WHITE)
     start_rect=start_text.get_rect()
     start_rect.center=start_button.center
@@ -104,14 +104,6 @@ while running:
     pygame.draw.rect(screen,RED,exit_button)
     screen.blit(exit_text,exit_rect)
     
-    # click, _,_=pygame.mouse.get_pressed()
-    # if click==1:
-    #     mouse= pygame.mouse.get_pos()
-    #     if start_button.collidepoint(mouse):
-        
-    #         flag=True
-    #     elif exit_button.collidepoint(mouse):
-    #         running=False
     
     for event in  pygame.event.get():
         if  event.type==pygame.QUIT:
@@ -140,9 +132,7 @@ while running:
     pygame.display.flip()
     clock.tick(30)
     
-    # for event in pygame.event.get():
-    #     if event.type == pygame.QUIT:
-    #         running = False
+
     
     
     
