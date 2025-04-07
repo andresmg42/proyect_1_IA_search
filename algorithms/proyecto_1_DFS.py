@@ -55,9 +55,14 @@ class Maze():
         
       
         self.height=len(self.contents)
+        
+        print(f'height: {self.height}')
       
         
         self.width=len(self.contents[0])
+        
+        print(f'widht: {self.width}')
+        
         self.boxes=set()
         
         for i in range(self.height):
@@ -120,12 +125,7 @@ class Maze():
         return False
         
                 
-            
-                
-            
-            
-            
-        
+     
     def solve(self):
         
         self.num_explored=0

@@ -9,6 +9,7 @@ from algorithms.proyecto_1_DFS import Maze as m_dfs
 from algorithms.proyecto_1_costo import Maze as m_costo
 from algorithms.proyecto_1_BFS import Maze as m_bfs
 from algorithms.proyecto_1_Astar import Maze as m_astar
+from time import time
 
 
 class StartWindow():
@@ -18,7 +19,8 @@ class StartWindow():
         
         
     def open_file(self):
-        file_path = filedialog.askopenfilename()
+        url='/home/andresuv/Ingenieria_De_Sistemas/Sesto_Semestre/IA/proyectos/PROYECTO-1/proyecto-1/plane_files'
+        file_path = filedialog.askopenfilename(initialdir=url)
         
         if file_path:
             with open(file_path, 'r') as file:
@@ -30,35 +32,59 @@ class StartWindow():
         file_path = filedialog.asksaveasfilename(defaultextension=".txt")
         if file_path:
             with open(file_path, 'w') as file:
-                text_to_save=self.text.get(1.0, tk.END)
+                # text_to_save=self.text.get(1.0, tk.END)
+                text_to_save = self.text.get(1.0, tk.END).rstrip('\n')
+                print('tex to save:',text_to_save)
                 file.write(text_to_save)
                 self.contents=text_to_save
             messagebox.showinfo("Info", "File saved successfully")
             
     def get_selected_algorithm(self):
         option=self.selected_option.get()
-        print(option)
         if option=='GFS':
-            return m_gfs
+            return (m_gfs,option)
         elif option=='DFS':
-            return m_dfs
+            return (m_dfs,option)
         elif option=='COST':
-            return m_costo
+            return (m_costo,option)
         elif option=='A*':
-            return m_astar
+            return (m_astar,option)
         else:
-            return m_bfs
+            return (m_bfs,option)
+        
+    def report(self,execution_time,deep_tree,total_explored_nodes,selected_algorithm):
+        string=f"""
+        Report: 
+        
+        Algorithm: {selected_algorithm}
+        
+        Total Explored Nodes: {total_explored_nodes}
+        
+        Deep Tree: {deep_tree}
+        
+        Execution Time: {execution_time} sec
+        
+        """
+        self.text.delete(1.0, tk.END)
+        self.text.insert(tk.END, string)
+        
             
             
     def on_start_click(self):
         if self.contents is not None:
             algorithm=self.get_selected_algorithm()
-            m=algorithm(self.contents)
+            m=algorithm[0](self.contents)
+            start=time()
             m.solve()
+            end=time()
+            execution_time=end-start
             solution=m.solution[1]
+            deep_tree=len(solution)
+            total_explored_nodes=m.num_explored
             maze=[[int(cell) for cell in line.split()] for line in self.contents.splitlines()]
             gui=GUI(maze,solution)
             m.output_image("maze.png", show_explored=True)
+            self.report(execution_time,deep_tree,total_explored_nodes,algorithm[1])
             gui.main_lopp()
             
             
@@ -66,8 +92,6 @@ class StartWindow():
         else:
             messagebox.showerror('choose a valid file!')
             
-    # def on_last_solution_click(self):
-    #     self.last_solution_image()
             
     def last_solution_image(self):
         root=tk.Toplevel()
@@ -81,16 +105,14 @@ class StartWindow():
         label=tk.Label(root,image=root.img)
         label.pack(fill=tk.BOTH)
         
-        # root.mainloop()
         
         
-        
-        
+              
     
     def main_loop(self):
         root = tk.Tk()
         root.title("SEARCH IA")
-        root.geometry('700x400')
+        root.geometry('1000x800')
 
         # Menu bar
         menubar = tk.Menu(root)
