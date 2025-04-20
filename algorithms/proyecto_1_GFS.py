@@ -2,29 +2,23 @@ import sys
 import math
 
 class Node():
-    def __init__(self,state,parent,action,position,cost):
+    def __init__(self,state,parent,action,position):
         self.state=state
         self.parent=parent
         self.action= action
         self.position=position
         self.m_d=0
-        self.cost=cost
-        self.total_cost=0
        
-        
-        
-    def manhattan_distance(self,goal):
-        return abs(self.position[0] - goal[0]) + abs(self.position[1] - goal[1])    
+    def manhattan_distance(self, position, goal):
+        return abs(position[0] - goal[0]) + abs(position[1] - goal[1])    
         
     def calc_heuristic(self,boxes):   
-         
+        
         remaining_boxes = boxes - self.state
         if not remaining_boxes:  
-            self.m_d=0
+            return 0
         
-        else:
-            self.m_d= min(self.manhattan_distance(box) for box in remaining_boxes)
-            self.total_cost=self.cost+self.m_d
+        return min(self.manhattan_distance(self.position, box) for box in remaining_boxes)
         
         
         
@@ -44,28 +38,35 @@ class QueueFrontier():
     
     
     def remove(self):
+        
         if self.empty():
             raise Exception('empty frontier')
-        
-        
-        min_node = min(self.frontier, key=lambda x: x.total_cost)
-        self.frontier.remove(min_node)
-        return min_node
-    
-    def update_node(self, state, position, new_node):
-        for i, node in enumerate(self.frontier):
-            if node.state == state and node.position == position:
-                if new_node.cost < node.cost:
-                    self.frontier[i] = new_node
-                return True
-        return False
+        else:
+       
+            nodomin=None
+            min_distance=sys.maxsize
             
-    
+            for node in self.frontier:
+                if node.m_d < min_distance:
+                    min_distance=node.m_d
+                    nodomin=node
+                    
+            self.frontier.remove(nodomin)
+            return nodomin
+            
+            
+           
+                
+                
+            
+            
+        
+
 class Maze():
     
-    def __init__(self,filename):
-        with open(filename) as f:
-            contents=f.read()
+    def __init__(self,contents):
+        # with open(filename) as f:
+        #     contents=f.read()
             
         if contents.count('2')!=1:
             raise Exception('maze must have exactly one start point')
@@ -135,7 +136,7 @@ class Maze():
         
         self.num_explored=0
         
-        start=Node(state=set(),parent=None,action=None,position=self.start,cost=0)
+        start=Node(state=set(),parent=None,action=None,position=self.start)
         frontier=QueueFrontier()
         frontier.add(start)
         
@@ -143,13 +144,10 @@ class Maze():
         
         while True:
             
-                       
-            
             if frontier.empty():
                 raise Exception('no solution')
             
             node=frontier.remove()
-            print(f'nodo removido: position = {node.position}, total_cost= {node.total_cost}')
             self.num_explored+=1
             
             if len(node.state) == len(self.boxes):
@@ -164,7 +162,7 @@ class Maze():
                 self.solution= (actions,cells)
                 return
             
-            
+            # self.explored.add(node)
             self.explored.add((node.position,tuple(sorted(node.state))))
             
             
@@ -173,25 +171,21 @@ class Maze():
                 
                 newstate=node.state.copy()
                 if self.contents[i][j]=='4':
+                    # newstate = node.state.copy()
                     newstate.add((i,j))
                     
-                                   
-                if (position,tuple(sorted(newstate)))  not in self.explored:
                     
-                    newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+               
+                
+                
+                
+                if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
                     
-                    child=Node(state=newstate,parent=node,action=action,position=position,cost=newcost)
+                    child=Node(state=newstate,parent=node,action=action,position=position)
                 
                     child.calc_heuristic(self.boxes)
-                        
-                    if frontier.contains_state(newstate, position):
-                        frontier.update_node(newstate, position, child)
-                    else:
-                        frontier.add(child)
                     
-                    
-                    
-                    
+                    frontier.add(child)
                     
                     
                 
@@ -246,16 +240,16 @@ class Maze():
             img.save(filename)
 
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python proyecto_1.py Prueba1.txt")
+# if len(sys.argv) != 2:
+#     sys.exit("Usage: python proyecto_1.py Prueba1.txt")
 
-m = Maze(sys.argv[1])
-print("Maze:")
-m.print()
-print("Solving...")
-m.solve()
-print("States Explored:", m.num_explored)
-print("Solution:")
-m.print()
-m.output_image("maze.png", show_explored=True)
-print(m.solution) 
+# m = Maze(sys.argv[1])
+# print("Maze:")
+# m.print()
+# print("Solving...")
+# m.solve()
+# print("States Explored:", m.num_explored)
+# print("Solution:")
+# m.print()
+# m.output_image("maze.png", show_explored=True)
+# print(m.solution) 

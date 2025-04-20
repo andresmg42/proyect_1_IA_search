@@ -1,5 +1,6 @@
 import sys
 import math
+import copy
 
 class Node():
     def __init__(self,state,parent,action,position):
@@ -7,22 +8,8 @@ class Node():
         self.parent=parent
         self.action= action
         self.position=position
-        self.m_d=0
-       
-    def manhattan_distance(self, position, goal):
-        return abs(position[0] - goal[0]) + abs(position[1] - goal[1])    
         
-    def calc_heuristic(self,boxes):   
-        
-        remaining_boxes = boxes - self.state
-        if not remaining_boxes:  
-            return 0
-        
-        return min(self.manhattan_distance(self.position, box) for box in remaining_boxes)
-        
-        
-        
-class QueueFrontier():
+class StackFrontier():
     def __init__(self):
         self.frontier=[]
     
@@ -35,26 +22,16 @@ class QueueFrontier():
     def empty(self):
         return len(self.frontier)==0
     
-    
-    
     def remove(self):
         
         if self.empty():
             raise Exception('empty frontier')
         else:
        
-            nodomin=None
-            min_distance=sys.maxsize
+            node=self.frontier[-1]
+            self.frontier=self.frontier[:-1]
             
-            for node in self.frontier:
-                if node.m_d < min_distance:
-                    min_distance=node.m_d
-                    nodomin=node
-                    
-            self.frontier.remove(nodomin)
-            return nodomin
-            
-            
+            return node
            
                 
                 
@@ -64,9 +41,9 @@ class QueueFrontier():
 
 class Maze():
     
-    def __init__(self,filename):
-        with open(filename) as f:
-            contents=f.read()
+    def __init__(self,contents):
+        # with open(filename) as f:
+        #     contents=f.read()
             
         if contents.count('2')!=1:
             raise Exception('maze must have exactly one start point')
@@ -78,9 +55,14 @@ class Maze():
         
       
         self.height=len(self.contents)
+        
+        print(f'height: {self.height}')
       
         
         self.width=len(self.contents[0])
+        
+        print(f'widht: {self.width}')
+        
         self.boxes=set()
         
         for i in range(self.height):
@@ -131,13 +113,25 @@ class Maze():
             if 0<= r < self.height and 0 <= c < self.width and not self.contents[r][c]=='1':
                 result.append((action,(r,c)))
         return result
+    
+    
+    def verify_loops(self,node):
+       
+        first_node=copy.copy(node)
+        while node.parent is not None:
+            if first_node.state==node.state and first_node.position==node.position:
+                return True
+            node=node.parent
+        return False
         
+                
+     
     def solve(self):
         
         self.num_explored=0
         
         start=Node(state=set(),parent=None,action=None,position=self.start)
-        frontier=QueueFrontier()
+        frontier=StackFrontier()
         frontier.add(start)
         
         self.explored=set()
@@ -148,6 +142,9 @@ class Maze():
                 raise Exception('no solution')
             
             node=frontier.remove()
+            
+                
+                
             self.num_explored+=1
             
             if len(node.state) == len(self.boxes):
@@ -162,28 +159,25 @@ class Maze():
                 self.solution= (actions,cells)
                 return
             
-            # self.explored.add(node)
             self.explored.add((node.position,tuple(sorted(node.state))))
             
             
             for action,position in self.neighbors(node.position):
                 i,j=position
                 
-                newstate=node.state.copy()
+                newstate=node.state
                 if self.contents[i][j]=='4':
-                    # newstate = node.state.copy()
+                    newstate = node.state.copy()
                     newstate.add((i,j))
                     
                     
-               
+            
                 
                 
                 
                 if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
                     
                     child=Node(state=newstate,parent=node,action=action,position=position)
-                
-                    child.calc_heuristic(self.boxes)
                     
                     frontier.add(child)
                     
@@ -240,16 +234,16 @@ class Maze():
             img.save(filename)
 
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python proyecto_1.py Prueba1.txt")
+# if len(sys.argv) != 2:
+#     sys.exit("Usage: python proyecto_1.py Prueba1.txt")
 
-m = Maze(sys.argv[1])
-print("Maze:")
-m.print()
-print("Solving...")
-m.solve()
-print("States Explored:", m.num_explored)
-print("Solution:")
-m.print()
-m.output_image("maze.png", show_explored=True)
-print(m.solution) 
+# m = Maze(sys.argv[1])
+# print("Maze:")
+# m.print()
+# print("Solving...")
+# m.solve()
+# print("States Explored:", m.num_explored)
+# print("Solution:")
+# m.print()
+# m.output_image("maze.png", show_explored=True)
+# print(m.solution) 

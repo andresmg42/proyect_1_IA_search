@@ -1,15 +1,15 @@
 import sys
 import math
-import copy
 
 class Node():
-    def __init__(self,state,parent,action,position):
+    def __init__(self,state,parent,action,cost,position):
         self.state=state
         self.parent=parent
         self.action= action
+        self.cost=cost
         self.position=position
         
-class StackFrontier():
+class QueueCostFrontier():
     def __init__(self):
         self.frontier=[]
     
@@ -23,16 +23,19 @@ class StackFrontier():
         return len(self.frontier)==0
     
     def remove(self):
-        
         if self.empty():
             raise Exception('empty frontier')
         else:
-       
-            node=self.frontier[-1]
-            self.frontier=self.frontier[:-1]
+            nodomin=None
+            min=math.inf
             
-            return node
-           
+            for node in self.frontier:
+                if node.cost < min:
+                    min=node.cost
+                    nodomin=node
+                    
+            self.frontier.remove(nodomin)
+            return nodomin
                 
                 
             
@@ -41,9 +44,9 @@ class StackFrontier():
 
 class Maze():
     
-    def __init__(self,filename):
-        with open(filename) as f:
-            contents=f.read()
+    def __init__(self,contents):
+        # with open(filename) as f:
+        #     contents=f.read()
             
         if contents.count('2')!=1:
             raise Exception('maze must have exactly one start point')
@@ -108,30 +111,13 @@ class Maze():
             if 0<= r < self.height and 0 <= c < self.width and not self.contents[r][c]=='1':
                 result.append((action,(r,c)))
         return result
-    
-    
-    def verify_loops(self,node):
-       
-        first_node=copy.copy(node)
-        while node.parent is not None:
-            if first_node.state==node.state and first_node.position==node.position:
-                return True
-            node=node.parent
-        return False
-        
-                
-            
-                
-            
-            
-            
         
     def solve(self):
         
         self.num_explored=0
         
-        start=Node(state=set(),parent=None,action=None,position=self.start)
-        frontier=StackFrontier()
+        start=Node(state=set(),parent=None,action=None,cost=0,position=self.start)
+        frontier=QueueCostFrontier()
         frontier.add(start)
         
         self.explored=set()
@@ -142,9 +128,6 @@ class Maze():
                 raise Exception('no solution')
             
             node=frontier.remove()
-            
-                
-                
             self.num_explored+=1
             
             if len(node.state) == len(self.boxes):
@@ -153,12 +136,13 @@ class Maze():
                 while node.parent is not None:
                     actions.append(node.action)
                     cells.append(node.position)
-                    node = node.parent
+                    node= node.parent
                 actions.reverse()
                 cells.reverse()
                 self.solution= (actions,cells)
                 return
             
+            # self.explored.add(node)
             self.explored.add((node.position,tuple(sorted(node.state))))
             
             
@@ -171,13 +155,13 @@ class Maze():
                     newstate.add((i,j))
                     
                     
-            
-                
                 
                 
                 if not frontier.contains_state(newstate,position) and (position,tuple(sorted(newstate)))  not in self.explored:
                     
-                    child=Node(state=newstate,parent=node,action=action,position=position)
+                    newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
+                
+                    child=Node(state=newstate,parent=node,action=action,cost=newcost,position=position)
                     
                     frontier.add(child)
                     
@@ -234,16 +218,31 @@ class Maze():
             img.save(filename)
 
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python proyecto_1.py Prueba1.txt")
+# if len(sys.argv) != 2:
+#     sys.exit("Usage: python proyecto_1.py Prueba1.txt")
 
-m = Maze(sys.argv[1])
-print("Maze:")
-m.print()
-print("Solving...")
-m.solve()
-print("States Explored:", m.num_explored)
-print("Solution:")
-m.print()
-m.output_image("maze.png", show_explored=True)
-print(m.solution) 
+# m = Maze(sys.argv[1])
+# print("Maze:")
+# m.print()
+# print("Solving...")
+# m.solve()
+# print("States Explored:", m.num_explored)
+# print("Solution:")
+# m.print()
+# m.output_image("maze.png", show_explored=True)
+# print(m.solution)            
+            
+            
+            
+            
+       
+        
+                    
+                    
+                
+                
+                    
+            
+            
+            
+            
