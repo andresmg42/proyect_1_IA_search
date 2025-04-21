@@ -11,7 +11,7 @@ GREEN = (0, 255, 0)
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 0)
 RED = (254, 0, 0)
-home_url='/home/andresuv/Ingenieria_De_Sistemas/Sesto_Semestre/IA/proyectos/PROYECTO-1/proyecto-1/'
+
 
 class GUI():
     
@@ -52,10 +52,10 @@ class GUI():
         return None
     
     def draw_maze(self,partial_solution):
-        electromagnetic_field=self.load_image(home_url+'gui/images/electromagnetic_field.jpg')
+        electromagnetic_field=self.load_image('gui/images/electromagnetic_field.jpg')
         
-        box=self.load_image(home_url+'gui/images/box.jpg')
-        dron=self.load_image(home_url+'gui/images/dron.jpg')
+        box=self.load_image('gui/images/box.jpg')
+        dron=self.load_image('gui/images/dron.jpg')
         
         
         
