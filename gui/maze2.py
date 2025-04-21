@@ -11,7 +11,7 @@ GREEN = (0, 255, 0)
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 0)
 RED = (254, 0, 0)
-
+home_url='/home/andresuv/Ingenieria_De_Sistemas/Sesto_Semestre/IA/proyectos/PROYECTO-1/proyecto-1/'
 
 class GUI():
     
@@ -22,6 +22,16 @@ class GUI():
         self.solution = solution
         self.maze = maze
         self.init_pygame()
+        
+    def load_image(self,path):
+        try:
+            image=pygame.image.load(path)
+            image= pygame.transform.scale(image,(self.tile_size,self.tile_size))
+            return image
+        except:
+            print('Could not load image')
+            return None
+        
 
     def init_pygame(self):
         self.tile_size = 50
@@ -42,6 +52,15 @@ class GUI():
         return None
     
     def draw_maze(self,partial_solution):
+        electromagnetic_field=self.load_image(home_url+'gui/images/electromagnetic_field.jpg')
+        
+        box=self.load_image(home_url+'gui/images/box.jpg')
+        dron=self.load_image(home_url+'gui/images/dron.jpg')
+        
+        
+        
+        
+        
         for row in range(len(self.maze)):
             for col in range(len(self.maze[0])):
                 if self.maze[row][col] == 1:
@@ -49,7 +68,7 @@ class GUI():
                 elif self.maze[row][col] == 2:
                     color = BLUE  
                 elif self.maze[row][col] == 3:
-                    color = ORANGE  
+                    color=ORANGE           
                 elif self.maze[row][col] == 4:
                     color = GREEN  
                 else:
@@ -60,6 +79,16 @@ class GUI():
                 
                 
                 pygame.draw.rect(self.screen, color, (col * self.tile_size, row * self.tile_size, self.tile_size, self.tile_size))
+                
+                if self.maze[row][col]==3 and electromagnetic_field is not None and (row,col) not in partial_solution:
+                    self.screen.blit(electromagnetic_field,(col*self.tile_size,row*self.tile_size))
+                
+                if self.maze[row][col]==4 and box is not None and (row,col) not in partial_solution:
+                    self.screen.blit(box,(col*self.tile_size,row*self.tile_size))
+                    
+                if self.maze[row][col]==2 and box is not None or (row,col)  in partial_solution:
+                    self.screen.blit(dron,(col*self.tile_size,row*self.tile_size))
+                
                 pygame.draw.rect(self.screen, BLACK, (col * self.tile_size, row * self.tile_size, self.tile_size, self.tile_size), 1)
     
     def main_lopp(self):
