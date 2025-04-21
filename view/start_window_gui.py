@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox,ttk
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from gui.maze2 import GUI
+from gui.gui_pygame import GUI
 from algorithms.proyecto_1_GFS import Maze as m_gfs
 from algorithms.proyecto_1_DFS import Maze as m_dfs
 from algorithms.proyecto_1_costo import Maze as m_costo

@@ -1,6 +1,4 @@
 import pygame
-import time
-
 
 # Definir colores
 WHITE = (255, 255, 255)
@@ -56,10 +54,6 @@ class GUI():
         
         box=self.load_image('gui/images/box.jpg')
         dron=self.load_image('gui/images/dron.jpg')
-        
-        
-        
-        
         
         for row in range(len(self.maze)):
             for col in range(len(self.maze[0])):
