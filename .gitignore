@@ -1,0 +1,5 @@
+.venv2
+maze.png
+algorithms/__pycache__
+gui/__pycache__
+view/__pycache__

@@ -84,6 +84,7 @@ class StartWindow():
             maze=[[int(cell) for cell in line.split()] for line in self.contents.splitlines()]
             gui=GUI(maze,solution)
             m.output_image("maze.png", show_explored=True)
+            m.print()
             self.report(execution_time,deep_tree,total_explored_nodes,algorithm[1])
             gui.main_lopp()
             
