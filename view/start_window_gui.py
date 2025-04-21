@@ -19,7 +19,7 @@ class StartWindow():
         
         
     def open_file(self):
-        url='/home/andresuv/Ingenieria_De_Sistemas/Sesto_Semestre/IA/proyectos/PROYECTO-1/proyecto-1/plane_files'
+        url='plane_files'
         file_path = filedialog.askopenfilename(initialdir=url)
         
         if file_path:

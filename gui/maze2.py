@@ -28,7 +28,7 @@ class GUI():
         self.width = len(self.maze[0]) * self.tile_size
         self.height = len(self.maze) * self.tile_size + 100
         pygame.init()
-        font="/home/andresuv/Ingenieria_De_Sistemas/Sesto_Semestre/IA/proyectos/PROYECTO-1/proyecto-1/gui/fonts/OpenSans-Regular.ttf"
+        font="gui/fonts/OpenSans-Regular.ttf"
         self.mediumFont = pygame.font.Font(font, 28)
         pygame.font.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
