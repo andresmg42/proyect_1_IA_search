@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox,ttk
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from gui.maze2 import GUI
+from gui.gui_pygame import GUI
 from algorithms.proyecto_1_GFS import Maze as m_gfs
 from algorithms.proyecto_1_DFS import Maze as m_dfs
 from algorithms.proyecto_1_costo import Maze as m_costo
@@ -19,7 +19,7 @@ class StartWindow():
         
         
     def open_file(self):
-        url='/home/andresuv/Ingenieria_De_Sistemas/Sesto_Semestre/IA/proyectos/PROYECTO-1/proyecto-1/plane_files'
+        url='plane_files'
         file_path = filedialog.askopenfilename(initialdir=url)
         
         if file_path:
@@ -84,6 +84,7 @@ class StartWindow():
             maze=[[int(cell) for cell in line.split()] for line in self.contents.splitlines()]
             gui=GUI(maze,solution)
             m.output_image("maze.png", show_explored=True)
+            m.print()
             self.report(execution_time,deep_tree,total_explored_nodes,algorithm[1])
             gui.main_lopp()
             
