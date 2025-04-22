@@ -19,7 +19,7 @@ class StartWindow():
         
         
     def open_file(self):
-        url='plane_files'
+        url='flat-files'
         file_path = filedialog.askopenfilename(initialdir=url)
         
         if file_path:
