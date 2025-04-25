@@ -64,8 +64,7 @@ class QueueFrontier():
 class Maze():
     
     def __init__(self,contents):
-        # with open(filename) as f:
-        #     contents=f.read()
+        
             
         if contents.count('2')!=1:
             raise Exception('maze must have exactly one start point')
@@ -245,16 +244,4 @@ class Maze():
             img.save(filename)
 
 
-# if len(sys.argv) != 2:
-#     sys.exit("Usage: python proyecto_1.py Prueba1.txt")
-
-# m = Maze(sys.argv[1])
-# print("Maze:")
-# m.print()
-# print("Solving...")
-# m.solve()
-# print("States Explored:", m.num_explored)
-# print("Solution:")
-# m.print()
-# m.output_image("maze.png", show_explored=True)
-# print(m.solution) 
+ 

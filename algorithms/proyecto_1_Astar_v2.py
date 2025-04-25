@@ -179,24 +179,6 @@ class Maze():
                     continue
                 
                 
-                    
-                
-                
-                
-                # if (position,tuple(sorted(newstate)))  not in self.explored:
-                    
-                #     newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
-                    
-                #     child=Node(state=newstate,parent=node,action=action,position=position,cost=newcost)
-                
-                #     child.calc_heuristic(self.boxes)
-                    
-                    
-                    
-                #     if frontier.contains_state(newstate, position):
-                #         frontier.update_node(newstate, position, child)
-                #     else:
-                #         frontier.add(child)
                         
                 newcost=node.cost + ( 8 if self.contents[i][j]=='3' else  1)
                 
@@ -215,11 +197,7 @@ class Maze():
                     
                     
                     
-                    
-                    
-                    
-                    
-                
+                                   
     def output_image(self, filename, show_solution=True, show_explored=False):
             from PIL import Image, ImageDraw
             cell_size = 50
@@ -271,16 +249,3 @@ class Maze():
             img.save(filename)
 
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python proyecto_1.py Prueba1.txt")
-
-m = Maze(sys.argv[1])
-print("Maze:")
-m.print()
-print("Solving...")
-m.solve()
-print("States Explored:", m.num_explored)
-print("Solution:")
-m.print()
-m.output_image("maze.png", show_explored=True)
-print(m.solution) 
