@@ -6,3 +6,5 @@ Next type "pip install -r requirements.txt" to install packages used.
 Next run "python runner.py" from the root directory.
 
 Andres Ortega - 2241885
+
+Facultad de Ingenieria - Universidad del Valle 
